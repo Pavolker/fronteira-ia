@@ -13,11 +13,17 @@ const port = process.env.PORT || 3001;
 
 // Database Connection
 const { Pool } = pg;
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+    console.error("CRITICAL: DATABASE_URL environment variable is not set!");
+}
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
+    connectionString,
+    ssl: connectionString && !connectionString.includes('localhost') ? {
         rejectUnauthorized: false
-    }
+    } : false
 });
 
 app.use(cors());
