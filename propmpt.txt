@@ -1,0 +1,91 @@
+
+
+### Prompt Técnico para Desenvolvimento do "Collaborative Reality Editor" (CRE)
+
+**Contexto e Objetivo:**
+Desenvolver uma aplicação web progressiva (PWA) chamada **Collaborative Reality Editor**, um laboratório visual interativo que demonstra a integração IA+Humano através de um sistema cartográfico de "territórios de competência". O app deve provar, através da visualização e interação, que a superioridade da integração reside na arquitetura explícita de fronteiras entre agentes.
+
+**Stack Tecnológico Obrigatório:**
+- **Frontend:** React 18+ com TypeScript, Next.js 14 (App Router)
+- **Visualização/Engine Gráfica:** D3.js (v7+) para force-directed graphs e topologia das fronteiras; Three.js com React-Three-Fiber para a camada de "profundidade" das simulações paralelas; Framer Motion para microinterações e transições de handoff
+- **State Management:** Zustand para gerenciamento de estado global das fronteiras e simulações; Immer para manipulação imutável dos territórios
+- **UI Components:** Radix UI (primitives) + Tailwind CSS para acessibilidade e consistência; Shadcn/ui como base de componentes
+- **Backend/IA (simulação):** Python FastAPI (opcional para MVP, pode ser mockado no frontend) com integração à API OpenAI/Claude para geração dinâmica de cenários baseados no input do usuário
+
+**Design System Específico (Crítico para o Sucesso):**
+
+1. **Paleta Cromática Semântica:**
+   - **Território IA:** Gradientes de `#0066FF` (Azure) até `#00D4FF` (Cyan Neon). Elementos: grids hexagonais regulares (honeycomb pattern), linhas finas (0.5px) com stroke-dasharray animado (representando processamento contínuo), tipografia monoespaçada (JetBrains Mono ou SF Mono)
+   - **Território Humano:** Gradientes de `#FF9500` (Amber) até `#FFD60A` (Gold). Elementos: formas orgânicas geradas por noise algorithms (Simplex noise), bordas irregulares (border-radius variável 30% 70% 70% 30% / 30% 30% 70% 70%), tipografia serifada humanística (Source Serif Pro ou Fraunces)
+   - **Território Compartilhado:** Gradientes de `#BF5AF2` (Purple) até `#FF9F0A` (Orange blend), criando um "roxo quente". Elementos: padrão híbrido - grids orgânicos (Voronoi diagrams) que respondem a ambas as lógicas
+   - **Linhas de Fronteira:** Cor `#FFFFFF` com glow de `#00D4FF` (lado IA) e `#FFD60A` (lado Humano). Devem ser draggable (interação primária)
+
+2. **Tipografia:**
+   - Headlines: Space Grotesk (peso 700) - transmite precisão técnica com toque humano
+   - Body: Inter (pesos 400/500) - legibilidade em dashboards densos
+   - Dados/Labels técnicos: JetBrains Mono
+
+**Arquitetura de Interface e UX:**
+
+**Tela 1: Input de Problema (O "Portal")**
+- Interface minimalista com textarea expansiva, placeholder: "Descreva o desafio complexo que precisa resolver (ex: reduzir churn sem ser predatório, diagnosticar paciente com dados ambíguos...)"
+- Botão de análise com efeito de "scan" visual (linha luminosa atravessando o texto) ao clicar
+- Transição fluida para o Editor via morphing do container (layoutId do Framer Motion)
+
+**Tela 2: O Editor de Realidade (Core Experience)**
+- **Layout Tripartido Responsivo:** 
+  - Desktop: Visualização em 3 colunas (IA | Compartilhado | Humano) com larguras dinâmicas controladas por sliders verticais "drag-to-resize"
+  - Mobile: Abas inferiores ou swipe horizontal entre territórios, com indicador de "fronteira atual" persistente
+  
+- **Componente "Mapa de Calor de Competências":**
+  - Implementar usando D3.js force simulation onde nós representam tarefas sub-problemas
+  - Cores dos nós indicam dominância: azul (IA puro), âmbar (Humano puro), roxo (disputado/compartilhado)
+  - As fronteiras entre zonas são **linhas de Bézier interativas** que o usuário pode arrastar para expandir/contrair territórios. Ao arrastar, os nós próximos "fugem" ou "são atraídos" simulando mudança de agência
+  
+- **Visualização das "Linhas de Handoff":**
+  - Quando o sistema detecta necessidade de transição (ex: IA atingiu limite de confiança ética), uma animação de "pulso" percorre a fronteira no sentido IA→Humano ou vice-versa
+  - Ícones semânticos flutuantes: `Cpu` (IA), `Heart`/`Brain` (Humano), `GitMerge` (Compartilhado)
+
+**Tela 3: Simulação Paralela (O "Prova")**
+- **Visualização em Split-Screen Triplo:**
+  - Painel Esquerdo: "Autonomia IA" - mostra resultado puramente algorítmico, visualizado com frieza (dashboards brutais, eficiência máxima, mas alertas vermelhos de "falha ética" ou "backlash humano" simulado)
+  - Painel Central: "Realidade Editada" - mostra resultado da configuração atual do usuário, com métricas de "Índice de Fronteira Saudável" (IFH) e "Eficácia Híbrida"
+  - Painel Direito: "Intuição Humana" - interface caótica, hand-drawn style, mostrando lentidão e viés cognitivo (ex: "Você ignorou 40% dos dados por confirmação de viés")
+  
+- **Mecânica de "Replay da Fronteira":**
+  - Timeline scrubber (controle de vídeo) que permite ao usuário ver exatamente o momento (timestamp) onde ocorreu cada handoff entre agentes
+  - Highlight visual nos 3 segundos críticos de transição
+
+**Funcionalidades Técnicas Específicas:**
+
+1. **Sistema de "Alavanca de Granularidade":**
+   - Slider de range dual (noUiSlider ou similar) para cada nó do problema, permitindo definir: "IA propõe → Humano veta" vs "Humano propõe → IA simula" vs "Decisão conjunta (voto ponderado)"
+
+2. **Detecção de "Colapso de Competência":**
+   - Algoritmo de validação que detecta quando 100% do mapa está em um único território e dispara animação de "alerta de arquitetura" (tela tremendo levemente, vermelho pulsante, mensagem: "Limite de arquitetura atingido - integração necessária")
+
+3. **Exportação do "Mapa de Guerra Cognitiva":**
+   - Geração de imagem SVG vetorial do mapa final (usando html-to-image ou svg-pan-zoom) para compartilhamento social
+   - Metadados embutidos mostrando estatísticas: "% de tarefas delegadas à IA", "Número de handoffs executados", "Tempo de resolução híbrida vs isolada"
+
+**Requisitos de Interação (Microinterações Críticas):**
+- **Drag das Fronteiras:** Ao arrastar a linha divisória, o background deve exibir um efeito de "líquido" (usando WebGL shaders ou SVG filters) misturando as cores dos dois territórios na zona de contato
+- **Hover em Nós:** Tooltip rico mostrando "Confiança IA: 94% | Complexidade Ética: Alta | Recomendação: Handoff para Humano"
+- **Sound Design (opcional mas recomendado):** Sons sutis de interface sci-fi para handoffs (usando Web Audio API), com pitch diferente para IA→Humano (tom ascendente, orgânico) vs Humano→IA (tom descendente, digital)
+
+**Critérios de Aceitação Técnica:**
+- Responsividade: Deve funcionar em tablet (iPad Pro) para apresentações executivas, mas experiência completa apenas em desktop (1920px+)
+- Acessibilidade: Contraste mínimo 4.5:1 em todos os textos, navegação por teclado completa (Tab para alternar entre territórios, Setas para ajustar fronteiras), labels ARIA descrevendo o estado atual das fronteiras para leitores de tela
+- Performance: Manter 60fps nas animações D3/Three.js mesmo com 50+ nós no grafo (usar React.memo e canvas rendering quando necessário)
+
+**Entregáveis Esperados do Agente de Desenvolvimento:**
+1. Estrutura de pastas Next.js com App Router
+2. Componentes reutilizáveis: `TerritoryMap`, `BoundaryLine`, `SimulationPlayer`, `CompetenceHeatmap`
+3. Hooks customizados: `useTerritoryEngine`, `useHandoffDetector`, `useSimulationRunner`
+4. Mock de dados para pelo menos 3 cenários de problema (Saúde, Negócios, Jurídico) para demonstração imediata
+5. Documentação de deploy (Vercel para frontend, opcionalmente Railway/Render para backend Python se implementado)
+
+---
+
+**Instrução final para o agente de codificação:** 
+"Priorize a **veracidade visual** - o usuário precisa *sentir* a diferença entre processamento frio e discernimento quente através da estética. A linha de fronteira não é meramente um divisor de layout, mas o protagonista visual da aplicação. Ela deve ter peso, luminosidade e responsividade tátil."

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  Since the user is using CDN, these might not be strictly needed for build process
+  unless we switch to PostCSS. But creating this file removes the 404 error
+  and allows for future custom CSS overrides if we switch away from CDN.
+*/
+body {
+  margin: 0;
+  padding: 0;
+}
