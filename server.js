@@ -6,17 +6,29 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-dotenv.config({ path: '.env.local' });
+// Load .env.local only if exists (dev mode), silence error in prod
+dotenv.config({ path: '.env.local', silent: true });
 
 const app = express();
 const port = process.env.PORT || 3001;
 
+console.log("--- STARTUP DEBUG ---");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("PORT:", process.env.PORT);
+const dbUrl = process.env.DATABASE_URL;
+console.log("DATABASE_URL set?", !!dbUrl);
+if (dbUrl) {
+    console.log("DATABASE_URL length:", dbUrl.length);
+    console.log("DATABASE_URL start:", dbUrl.substring(0, 15) + "...");
+}
+console.log("--- END DEBUG ---");
+
 // Database Connection
 const { Pool } = pg;
-const connectionString = process.env.DATABASE_URL;
+const connectionString = dbUrl;
 
 if (!connectionString) {
-    console.error("CRITICAL: DATABASE_URL environment variable is not set!");
+    console.error("CRITICAL: DATABASE_URL environment variable is not set! process.env keys:", Object.keys(process.env).join(', '));
 }
 
 const pool = new Pool({
