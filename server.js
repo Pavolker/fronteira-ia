@@ -9,7 +9,7 @@ import { dirname, join } from 'path';
 dotenv.config({ path: '.env.local' });
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Database Connection
 const { Pool } = pg;
